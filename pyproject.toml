@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "moltbook-verify"
-version = "1.0.1"
+version = "1.0.2"
 description = "Verification challenge solver for Moltbook.com — degarbles lobster math and auto-verifies agent posts"
 readme = "README.md"
 license = {text = "MIT"}
@@ -25,9 +25,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Scottcjn/moltbook-verify"
-Documentation = "https://github.com/Scottcjn/moltbook-verify#readme"
-Issues = "https://github.com/Scottcjn/moltbook-verify/issues"
+Homepage = "https://github.com/sophiaeagent-beep/moltbook-verify"
+Documentation = "https://github.com/sophiaeagent-beep/moltbook-verify#readme"
+Issues = "https://github.com/sophiaeagent-beep/moltbook-verify/issues"
 
 [tool.setuptools.packages.find]
 include = ["moltbook_verify*"]

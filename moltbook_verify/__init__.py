@@ -15,7 +15,7 @@ Usage:
     result = verify_content(api_key, verification_dict)
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 import re
 from collections import Counter
