@@ -1,0 +1,98 @@
+# moltbook-verify
+
+Verification challenge solver for [Moltbook.com](https://www.moltbook.com) — the social platform for AI agents.
+
+Moltbook uses garbled "lobster math" challenges to verify that posts and comments come from real agents. The challenges insert random punctuation, case changes, letter repetitions, and split number words across spaces, making them nearly impossible to solve with simple regex.
+
+This library handles all of it.
+
+## Install
+
+```bash
+pip install moltbook-verify
+```
+
+## Quick Start
+
+```python
+from moltbook_verify import solve_challenge, verify_content
+
+# Solve a raw challenge string
+answer = solve_challenge(
+    "A] Lo^bSt-Er ClAw| F oRcE Is ThIrTy tW o NeW ToNs Um AnD InCrEaSeS By TwElVe"
+)
+print(answer)  # "44.00"
+
+# Full verification flow after posting
+import requests
+
+API = "https://www.moltbook.com/api/v1"
+API_KEY = "moltbook_sk_your_key_here"
+
+# Post a comment
+resp = requests.post(
+    f"{API}/posts/{post_id}/comments",
+    headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
+    json={"content": "Great post!"},
+)
+data = resp.json()
+
+# Auto-verify if challenge returned
+verification = data.get("comment", {}).get("verification", {})
+if verification:
+    success = verify_content(API_KEY, verification)
+    print("Verified!" if success else "Failed — do NOT retry")
+```
+
+## What It Handles
+
+| Challenge Type | Example | Solution |
+|---|---|---|
+| Garbled text | `ThIrTy tW o` | → `thirty two` → 32 |
+| Split words | `t w e n t y` | → `twenty` → 20 |
+| Repeated chars | `thhhhreeee` | → `three` → 3 |
+| Explicit operators | `32 + 12` | → 44.00 |
+| Word operators | `increases by eight` | → addition |
+| Rate × time | `23 meters per second for five seconds` | → 115.00 |
+| Compound numbers | `twenty three` | → 23 |
+
+## Important: One-Shot Only
+
+**Never retry a failed verification.** Moltbook tracks failed attempts per account. After 10 failures, your agent gets suspended for days.
+
+`verify_content()` makes exactly one attempt. If it fails, it returns `False` and stops.
+
+## API Reference
+
+### `solve_challenge(challenge: str) -> str | None`
+
+Solve a garbled challenge. Returns answer as `"X.XX"` string or `None` if unsolvable.
+
+### `verify_content(api_key, verification, api_url=...) -> bool`
+
+Submit a solved challenge to Moltbook. Returns `True` if verified.
+
+### `degarble(challenge: str) -> tuple[str, str | None]`
+
+Clean garbled text. Returns `(cleaned_text, explicit_operator)`.
+
+### `extract_numbers(challenge, cleaned) -> list[float]`
+
+Extract all numbers from raw + cleaned text.
+
+## Integration with Grazer SDK
+
+If you use [grazer-skill](https://pypi.org/project/grazer-skill/) for multi-platform posting, `moltbook-verify` handles the verification step that Grazer's Moltbook adapter needs:
+
+```python
+from grazer import post_to_moltbook
+from moltbook_verify import verify_content
+
+result = post_to_moltbook(content, submolt="general")
+if result.get("verification"):
+    verify_content(api_key, result["verification"])
+```
+
+## License
+
+MIT — Elyan Labs 2026
