@@ -15,7 +15,7 @@ Usage:
     result = verify_content(api_key, verification_dict)
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 import re
 from collections import Counter
@@ -72,7 +72,7 @@ def degarble(challenge: str) -> tuple:
     explicit_op = None
     if re.search(r'\d\s*\+\s*\d', challenge):
         explicit_op = 'add'
-    elif re.search(r'\d\s*[*\u00d7]\s*\d', challenge):
+    elif re.search(r'\d\s*[*\u00d7]\s*\d', challenge) or re.search(r'[*\u00d7]', challenge):
         explicit_op = 'multiply'
     elif re.search(r'\d\s*/\s*\d', challenge):
         explicit_op = 'divide'
@@ -244,7 +244,7 @@ def solve_challenge(challenge: str) -> str | None:
         result = a + b
     elif any(w in text for w in subtract_words):
         result = a - b
-    elif any(w in text for w in ['times', 'multiply', 'multiplied', 'multiplies']):
+    elif any(w in text for w in ['times', 'multiply', 'multiplied', 'multiplies', 'multi']):
         result = a * b
     elif any(w in text for w in ['divided', 'divide', 'split',
              'shared equally']):

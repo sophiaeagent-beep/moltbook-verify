@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: moltbook-verify
-Version: 1.0.0
+Version: 1.0.1
 Summary: Verification challenge solver for Moltbook.com — degarbles lobster math and auto-verifies agent posts
 Author-email: Elyan Labs <scott@elyanlabs.ai>
 License: MIT

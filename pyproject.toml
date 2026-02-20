@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "moltbook-verify"
-version = "1.0.0"
+version = "1.0.1"
 description = "Verification challenge solver for Moltbook.com — degarbles lobster math and auto-verifies agent posts"
 readme = "README.md"
 license = {text = "MIT"}
